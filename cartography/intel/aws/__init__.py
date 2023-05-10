@@ -145,6 +145,7 @@ def _sync_multiple_accounts(
     common_job_parameters: Dict[str, Any],
     aws_best_effort_mode: bool,
     aws_requested_syncs: List[str] = [],
+    aws_use_regions: List[str] = [],
 ) -> bool:
     logger.info("Syncing AWS accounts: %s", ', '.join(accounts.values()))
     organizations.sync(neo4j_session, accounts, sync_tag, common_job_parameters)
@@ -173,6 +174,7 @@ def _sync_multiple_accounts(
                 sync_tag,
                 common_job_parameters,
                 aws_requested_syncs=aws_requested_syncs,  # Could be replaced later with per-account requested syncs
+                regions=aws_use_regions,
             )
         except Exception as e:
             if aws_best_effort_mode:
@@ -290,6 +292,7 @@ def start_aws_ingestion(neo4j_session: neo4j.Session, config: Config) -> None:
                 "sync. Doing otherwise will result in undefined and untested behavior."
             ),
         )
+    
 
     requested_syncs: List[str] = list(RESOURCE_FUNCTIONS.keys())
     if config.aws_requested_syncs:
@@ -302,6 +305,7 @@ def start_aws_ingestion(neo4j_session: neo4j.Session, config: Config) -> None:
         common_job_parameters,
         config.aws_best_effort_mode,
         requested_syncs,
+        config.aws_use_region,
     )
 
     if sync_successful:

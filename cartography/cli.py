@@ -161,6 +161,15 @@ class CLI:
             ),
         )
         parser.add_argument(
+            '--aws-use-region',
+            action="append",
+            default=[],
+            help=(
+                'Sync regions given with this option. This option may be given multiple times. '
+                'If this option is not given, autodiscovery for available regions will be used.'
+            )
+        )
+        parser.add_argument(
             '--oci-sync-all-profiles',
             action='store_true',
             help=(
